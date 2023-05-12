@@ -72,10 +72,7 @@ class MultipleObjectsTracker:
         box_all = self._append_boxes_from_meanshift(frame, box_all)
 
         # only keep those that are both salient and in mean shift
-        if len(self.object_roi) == 0:
-            group_thresh = 0  # no previous frame: keep all form saliency
-        else:
-            group_thresh = 1  # previous frame + saliency
+        group_thresh = 0 if len(self.object_roi) == 0 else 1
         box_grouped, _ = cv2.groupRectangles(box_all, group_thresh, 0.1)
 
         # update mean-shift bookkeeping for remaining boxes

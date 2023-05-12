@@ -55,9 +55,9 @@ class SceneReconstruction3D:
 
         # make sure images are valid
         if self.img1 is None:
-            sys.exit("Image " + img_path1 + " could not be loaded.")
+            sys.exit(f"Image {img_path1} could not be loaded.")
         if self.img2 is None:
-            sys.exit("Image " + img_path2 + " could not be loaded.")
+            sys.exit(f"Image {img_path2} could not be loaded.")
 
         if len(self.img1.shape) == 2:
             self.img1 = cv2.cvtColor(self.img1, cv2.COLOR_GRAY2BGR)
@@ -229,13 +229,11 @@ class SceneReconstruction3D:
         if feat_mode.lower() == "surf":
             # feature matching via SURF and BFMatcher
             self._extract_keypoints_surf()
+        elif feat_mode.lower() == "flow":
+            # feature matching via optic flow
+            self._extract_keypoints_flow()
         else:
-            if feat_mode.lower() == "flow":
-                # feature matching via optic flow
-                self._extract_keypoints_flow()
-            else:
-                sys.exit("Unknown feat_mode " + feat_mode +
-                         ". Use 'SURF' or 'FLOW'")
+            sys.exit(f"Unknown feat_mode {feat_mode}. Use 'SURF' or 'FLOW'")
 
     def _extract_keypoints_surf(self):
         """Extracts keypoints via SURF descriptors"""

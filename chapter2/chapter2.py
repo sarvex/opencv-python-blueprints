@@ -41,10 +41,7 @@ class KinectLayout(BaseLayout):
         """Acquire frame from depth sensor using freenect library"""
         frame, _ = freenect.sync_get_depth()
         # return success if frame size is valid
-        if frame is not None:
-            return (True, frame)
-        else:
-            return (False, frame)
+        return (True, frame) if frame is not None else (False, frame)
 
     def _process_frame(self, frame):
         """Recognizes hand gesture in a frame of the depth sensor"""

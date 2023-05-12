@@ -48,29 +48,25 @@ def load_data(rootpath="datasets/gtsrb_training", feature=None, cut_roi=True,
     labels = []  # corresponding labels
     for c in xrange(len(classes)):
         # subdirectory for class
-        prefix = rootpath + '/' + format(classes[c], '05d') + '/'
+        prefix = f'{rootpath}/' + format(classes[c], '05d') + '/'
 
-        # annotations file
-        gt_file = open(prefix + 'GT-' + format(classes[c], '05d') + '.csv')
+        with open(f'{prefix}GT-' + format(classes[c], '05d') + '.csv') as gt_file:
+            # csv parser for annotations file
+            gt_reader = csv.reader(gt_file, delimiter=';')
+            gt_reader.next()  # skip header
 
-        # csv parser for annotations file
-        gt_reader = csv.reader(gt_file, delimiter=';')
-        gt_reader.next()  # skip header
+            # loop over all images in current annotations file
+            for row in gt_reader:
+                # first column is filename
+                im = cv2.imread(prefix + row[0])
 
-        # loop over all images in current annotations file
-        for row in gt_reader:
-            # first column is filename
-            im = cv2.imread(prefix + row[0])
+                # remove regions surrounding the actual traffic sign
+                if cut_roi:
+                    im = im[np.int(row[4]):np.int(row[6]),
+                            np.int(row[3]):np.int(row[5]), :]
 
-            # remove regions surrounding the actual traffic sign
-            if cut_roi:
-                im = im[np.int(row[4]):np.int(row[6]),
-                        np.int(row[3]):np.int(row[5]), :]
-
-            X.append(im)
-            labels.append(c)
-        gt_file.close()
-
+                X.append(im)
+                labels.append(c)
     # perform feature extraction
     X = _extract_feature(X, feature)
 
@@ -83,8 +79,8 @@ def load_data(rootpath="datasets/gtsrb_training", feature=None, cut_roi=True,
         num_samples = 15
         sample_idx = np.random.randint(len(X), size=num_samples)
         sp = 1
-        for r in xrange(3):
-            for c in xrange(5):
+        for _ in xrange(3):
+            for _ in xrange(5):
                 ax = plt.subplot(3, 5, sp)
                 sample = X[sample_idx[sp - 1]]
                 ax.imshow(sample.reshape((32, 32)), cmap=cm.Greys_r)
@@ -116,7 +112,7 @@ def _extract_feature(X, feature):
     """
 
     # transform color space
-    if feature == 'gray' or feature == 'surf':
+    if feature in ['gray', 'surf']:
         X = [cv2.cvtColor(x, cv2.COLOR_BGR2GRAY) for x in X]
     elif feature == 'hsv':
         X = [cv2.cvtColor(x, cv2.COLOR_BGR2HSV) for x in X]

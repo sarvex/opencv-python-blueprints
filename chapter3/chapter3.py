@@ -35,10 +35,7 @@ class FeatureMatchingLayout(BaseLayout):
         """Processes each captured frame"""
         # if object detected, display new frame, else old one
         success, new_frame = self.matching.match(frame)
-        if success:
-            return new_frame
-        else:
-            return frame
+        return new_frame if success else frame
 
 
 def main():

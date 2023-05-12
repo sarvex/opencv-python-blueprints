@@ -99,16 +99,13 @@ def load_from_file(file):
         :returns: (X_train, y_train), (X_test, y_test), V, m
     """
     if path.isfile(file):
-        # load all relevant data structures from file
-        f = open(file, 'rb')
-        X_train = pickle.load(f)
-        y_train = pickle.load(f)
-        X_test = pickle.load(f)
-        y_test = pickle.load(f)
-        V = pickle.load(f)
-        m = pickle.load(f)
-        f.close()
-
+        with open(file, 'rb') as f:
+            X_train = pickle.load(f)
+            y_train = pickle.load(f)
+            X_test = pickle.load(f)
+            y_test = pickle.load(f)
+            V = pickle.load(f)
+            m = pickle.load(f)
     return (X_train, y_train), (X_test, y_test), V, m
 
 

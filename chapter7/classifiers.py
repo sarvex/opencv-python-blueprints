@@ -214,7 +214,7 @@ class MultiLayerPerceptron(Classifier):
         self.num_features = layer_sizes[0]
         self.num_classes = layer_sizes[-1]
         self.class_labels = class_labels
-        self.params = params or dict()
+        self.params = params or {}
         self.mode = class_mode
 
         # initialize MLP
